@@ -276,3 +276,70 @@ document.getElementById("pub-limit").addEventListener("change", function() {
   // Render publications based on selected limit
   renderPublications(limit, pubListContainer);
 });
+
+// Function to link media mentions
+document.querySelectorAll('.critic-review').forEach((card) => {
+  card.addEventListener('click', () => {
+    window.open(card.dataset.url, '_blank'); // open in new tab
+  });
+});
+
+// Function to link media mentions (swiper cards)
+document.querySelectorAll('.testimonial-item').forEach((card) => {
+  card.addEventListener('click', () => {
+    window.open(card.dataset.url, '_blank'); // open in new tab
+  });
+});
+
+// Function to equalize testimonial heights
+function equalizeTestimonialHeights() {
+  const items = document.querySelectorAll('.testimonials .testimonial-item');
+  let maxHeight = 0;
+
+  // Reset heights first
+  items.forEach(item => item.style.height = 'auto');
+
+  // Find max height
+  items.forEach(item => {
+    const h = item.offsetHeight;
+    if (h > maxHeight) maxHeight = h;
+  });
+
+  // Apply max height
+  items.forEach(item => item.style.height = maxHeight + 'px');
+}
+// Run on load
+window.addEventListener('load', equalizeTestimonialHeights);
+// Optional: rerun on window resize
+window.addEventListener('resize', equalizeTestimonialHeights);
+
+// Function to imitate php email form submission
+document.querySelector('.php-email-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const form = this;
+  const loading = form.querySelector('.loading');
+  const error = form.querySelector('.error-message');
+  const success = form.querySelector('.sent-message');
+
+  loading.style.display = "block";
+  error.style.display = "none";
+  success.style.display = "none";
+
+  // Send the form
+  let response = await fetch(form.action, {
+    method: "POST",
+    body: new FormData(form)
+  });
+
+  loading.style.display = "none";
+
+  let result = await response.json();
+  if (result.success) {
+    success.style.display = "block";
+    form.reset();
+  } else {
+    error.innerHTML = result.message;
+    error.style.display = "block";
+  }
+});
